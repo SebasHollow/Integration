@@ -2,11 +2,9 @@
  * Created by Sebas.Hollow on 8/12/2015.
  */
 
-import javafx.util.Pair;
+import org.jfree.data.xy.XYSeries;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Runge {
     public interface FancyFunc {double calc(double x, double y);}
@@ -20,15 +18,16 @@ public class Runge {
         this.end = end;
     }
 
-    public List<Pair<Double, Double>> calculate(double y, double h){
-        List<Pair<Double, Double>> list = new ArrayList<>();
-        list.add(new Pair<>(start, y));
+    public XYSeries calculate(double y, double h){
+        final String title = MessageFormat.format("Runge (x = {0}, y = {1}, h = {2})", start, y, h);
+        final XYSeries series = new XYSeries(title);
+        series.add(start, y);
         for (double x = start+h; x <= end; x += h){
             y += T3(x, y, h);
-            list.add(new Pair<>(x, y));
+            series.add(x, y);
             System.out.println(MessageFormat.format("x = {0}, y = {1}", x, y));
         }
-        return list;
+        return series;
     }
 
     private double T3(double x, double y, double h){

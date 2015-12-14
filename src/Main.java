@@ -2,7 +2,7 @@
  * Created by Sebas.Hollow on 8/12/2015.
  */
 
-import javafx.util.Pair;
+import org.jfree.data.xy.XYSeries;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ public class Main {
 
     public static void main (String[] args){
         intervalArray.forEach(n -> partA(funcA, 1, 10, n));
-        stepArray.forEach(h -> partB(funcB, 0, 1, h, 1));
+        stepArray.forEach(h -> partB(funcB, 0, 3, h, 1));
     }
 
     public static void partA(Function func, double a, double b, int n){
@@ -42,7 +42,8 @@ public class Main {
     }
 
 
-    public static void display (List<Pair<Double, Double>> coordinates){
-        //ToDo
+    public static void display (XYSeries series){
+        Graph graph = new Graph("Ayy lmao", series);
+        graph.display();
     }
 }
