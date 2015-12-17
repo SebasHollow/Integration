@@ -7,6 +7,8 @@ import org.jfree.data.xy.XYSeries;
 import java.text.MessageFormat;
 
 public class Runge {
+    public static int p = 3;
+
     public interface FancyFunc {double calc(double x, double y);}
     private final double start;
     private final double end;
@@ -22,7 +24,7 @@ public class Runge {
         final String title = MessageFormat.format("Runge (x = {0}, y = {1}, h = {2})", start, y, h);
         final XYSeries series = new XYSeries(title);
         series.add(start, y);
-        for (double x = start+h; x <= end; x += h){
+        for (double x = start+h; x - 0.001 <= end; x += h){
             y += T3(x, y, h);
             series.add(x, y);
             System.out.println(MessageFormat.format("x = {0}, y = {1}", x, y));

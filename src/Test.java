@@ -8,9 +8,10 @@ public class Test {
     final static Runge.FancyFunc slidesRunge = (double x, double y) -> Math.sin(x) - y;
 
     public static void main(String[] args){
-/*        Main.intervalArray.forEach(n -> Main.partA(Main.funcA, 1, 10, n));
-        Main.stepArray.forEach(h -> Main.partB(Main.funcB, 0, 1, h, 1));*/
-        testGraphs();
+        //Main.intervalArray.forEach(n -> Main.partA(Main.funcA, 1, 10, n));
+        //Main.stepArray.forEach(h -> Main.partB(Main.funcB, 0, 1, h, 1));
+        Main.partB(Main.funcB, 0, Math.PI, 0.05*Math.PI, 1);
+        //testGraphs();
     }
 
     public static void testGraphs(){

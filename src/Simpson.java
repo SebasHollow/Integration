@@ -2,7 +2,7 @@
  * Created by Sebas.Hollow on 8/12/2015.
  */
 public class Simpson {
-    public final static int p = 2;
+    public final static int p = 4;
     private final Main.Function f;
     private double a;
     private double b;
@@ -17,15 +17,16 @@ public class Simpson {
         final double h = (b - a) / n;
         double sum = f.calc(a) + f.calc(b);
 
-        for (int i = 1; i < n; i += 2) {
+        for (int i = 1; i < n; i ++) {
             final double x = a + (i * h);
-            sum += 2 * f.calc(x);
+            final double coef = (i % 2 == 0) ? 2 : 4;
+            sum += coef * f.calc(x);
         }
 
-        for (int i = 2; i < n; i += 2){
+/*        for (int i = 2; i < n; i += 2){
             final double x = a + (i * h);
             sum += 4 * f.calc(x);
-        }
+        }*/
         return (sum * (b - a)) / (3*n);
     }
 }
