@@ -17,17 +17,18 @@ public class Runge {
     public Runge (FancyFunc func, double start, double end){
         this.func = func;
         this.start = start;
-        this.end = end;
+        //Add a small number as a workaround to avoid skipping final loop in "calculate(double, double)"
+        this.end = end + 0.0001;
     }
 
     public XYSeries calculate(double y, double h){
         final String title = MessageFormat.format("Runge (x = {0}, y = {1}, h = {2})", start, y, h);
         final XYSeries series = new XYSeries(title);
         series.add(start, y);
-        for (double x = start+h; x - 0.001 <= end; x += h){
+        for (double x = start+h; x <= end; x += h){
             y += T3(x, y, h);
             series.add(x, y);
-            System.out.println(MessageFormat.format("x = {0}, y = {1}", x, y));
+            //System.out.println(MessageFormat.format("x = {0}, y = {1}", x, y));
         }
         return series;
     }
