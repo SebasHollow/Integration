@@ -24,20 +24,19 @@ public class Runge {
     public XYSeries calculate(double y, double h){
         final String title = MessageFormat.format("Runge (x = {0}, y = {1}, h = {2})", start, y, h);
         final XYSeries series = new XYSeries(title);
-        series.add(start, y);
-        for (double x = start+h; x <= end; x += h){
-            y += T3(x, y, h);
+        for (double x = start; x < end; x += h){
             series.add(x, y);
             //System.out.println(MessageFormat.format("x = {0}, y = {1}", x, y));
-        }
+            y += T3(x, y, h);
+           }
         return series;
     }
 
     private double T3(double x, double y, double h){
-        double k1 = h * func.calc(x, y);
-        double k2 = h * func.calc(x + h/2, y + (k1 * h/2));
-        double k3 = h * func.calc(x + h, y - (k1*h + k2 * 2*h));
-        return (k1 + 4*k2 + k3)/6;
+        double k1 = func.calc(x, y);
+        double k2 = func.calc(x + h/2, y + (k1 * h/2));
+        double k3 = func.calc(x + h, y + h*(-k1 + 2*k2));
+            return (h/6)*(k1 + 4*k2 + k3);
     }
 
     public static double getError (double s1, double s2, int p){

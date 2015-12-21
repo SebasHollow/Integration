@@ -6,6 +6,7 @@ import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,10 +16,10 @@ public class Main {
     final static Runge.FancyFunc funcB = (double x, double y) -> Math.cos(1.75*x + y) + 1.2*(x-y);
     final static List<Integer> intervalArray = Arrays.asList(10, 20, 40, 80);
     final static List<Double> stepArray = Arrays.asList(0.1, 0.05, 0.025, 0.0125);
+    public static List<XYDataItem> lastPoints = new ArrayList<>();
 
     public static void main (String[] args){
         //intervalArray.forEach(n -> partA(funcA, 1, 10, n));
-        //firstDiff = true;
         stepArray.forEach(h -> partB(funcB, 0, 3, h, 1));
     }
 
@@ -36,25 +37,33 @@ public class Main {
 
         System.out.println(MessageFormat.format(format, n, sAns, gAns));
         System.out.println(MessageFormat.format(errorFormat, sError, gError));
-        updateErrorDif(sError, gError);
+        updateErrorPartA(sError, gError);
     }
 
     public static void partB(Runge.FancyFunc func, double start, double end, double h, double y){
-        final String errorFormat = "Error:\tRunge = {0}";
 
         Runge method = new Runge(func, start, end);
         XYSeries data = method.calculate(y, h);
         XYDataItem point = getLastPoint(data);
 
-        double rError = Runge.getError(point.getYValue(),
-                                       getLastPoint(method.calculate(y, h/2)).getYValue(),
-                                       Runge.p);
-
-        System.out.println(MessageFormat.format("\n({0}, {1})", point.getXValue(), point.getYValue()));
-        System.out.println(MessageFormat.format(errorFormat, rError));
-        updateErrorDif2(rError);
-
+        compareErrors(point);
         display(data);
+    }
+
+    public static void compareErrors(XYDataItem point){
+        System.out.println(MessageFormat.format("\n({0}, {1})", point.getXValue(), point.getYValue()));
+        final String errorFormat = "Error:\tRunge = {0}";
+
+        int size = lastPoints.size();
+        if (size > 0){
+            double prevY = lastPoints.get(size-1).getYValue();
+            double err = Runge.getError(point.getYValue(), prevY, Runge.p);
+            System.out.println(MessageFormat.format(errorFormat, err));
+            if (size > 1)
+                System.out.println(MessageFormat.format("Runge and Kutta: {0} time(s)", kuttaError / err));
+            kuttaError = err;
+        }
+        lastPoints.add(point);
     }
 
     public static XYDataItem getLastPoint (XYSeries series){
@@ -62,20 +71,13 @@ public class Main {
         return (XYDataItem) list.get(list.size() - 1);
     }
 
-    public static void display (XYSeries series){
-        Graph graph = new Graph("Ayy lmao", series);
-        graph.display();
-    }
-
-
-
     //ToDo: Clean this spaghetti
     static double simpsonErrorDiff = 0;
     static double gaussErrorDiff = 0;
-    static double kuttaErrorDiff = 0;
+    static double kuttaError = 0;
     static boolean firstDiff = true;
 
-    public static void updateErrorDif(double sError, double gError){
+    public static void updateErrorPartA(double sError, double gError){
         if (!firstDiff)
             System.out.println(MessageFormat.format("Simpson: {0} times, \tGauss {1} time(s)", simpsonErrorDiff / sError, gaussErrorDiff / gError));
 
@@ -84,11 +86,8 @@ public class Main {
         firstDiff = false;
     }
 
-    public static void updateErrorDif2(double error){
-        if (!firstDiff)
-            System.out.println(MessageFormat.format("Runge and Kutta: {0} time(s)", kuttaErrorDiff / error));
-
-        kuttaErrorDiff = error;
-        firstDiff = false;
+    public static void display (XYSeries series){
+        Graph graph = new Graph("Ayy lmao", series);
+        graph.display();
     }
 }
